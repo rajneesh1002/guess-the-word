@@ -5,6 +5,7 @@ const words = ["adventure", "creativity", "benchmark", "somewhere"];
     let maxWrong = 9;
     let start;
     let timer;
+    let timerStarted =false;
 
     const wordDiv = document.getElementById('word');
     const keysDiv = document.getElementById('keys');
@@ -19,6 +20,11 @@ const words = ["adventure", "creativity", "benchmark", "somewhere"];
     }
 
     function handleLetter(letter, btn) {
+      if (!timerStarted){
+        startTimer();
+        timerStarted=true;
+      }
+
       if (word.includes(letter)) {
         [...word].forEach((l, i) => {
           if (l === letter) display[i] = letter;
@@ -60,20 +66,24 @@ const words = ["adventure", "creativity", "benchmark", "somewhere"];
         keysDiv.appendChild(btn);
       }
     }
+    function startTimer(){
+      start = Date.now();
+      timer = setInterval(() => {
+        timeSpan.textContent = Math.floor((Date.now() - start) / 1000);
+      }, 1000);
+    }
 
     
     function startGame() {
       word = words[Math.floor(Math.random() * words.length)].toLowerCase();
-      display = Array(9).fill('_');
+      display = Array(word.length).fill('_');
       wrong = 0;
-      start = Date.now();
+      timerStarted=false;
       message.textContent = '';
       createKeyboard();
       drawWord();
       clearInterval(timer);
-      timer = setInterval(() => {
-        timeSpan.textContent = Math.floor((Date.now() - start) / 1000);
-      }, 1000);
+      timeSpan.textContent="0";
     }
 
     restartBtn.onclick = startGame;
